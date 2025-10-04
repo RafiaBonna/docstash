@@ -1,0 +1,258 @@
+📘 Laravel Advanced Notes (Detailed)
+1. Queue & Job (Background Processing)
+
+Queue দিয়ে Background এ Task চালানো যায়, যেমন Email, SMS, Notifications।
+
+Job তৈরি:
+
+php artisan make:job SendEmailJob
+
+
+Job Example:
+
+namespace App\Jobs;
+
+use App\Mail\WelcomeMail;
+use Mail;
+
+class SendEmailJob implements ShouldQueue
+{
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    public $user;
+
+    public function __construct($user){
+        $this->user = $user;
+    }
+
+    public function handle(){
+        Mail::to($this->user->email)->send(new WelcomeMail($this->user));
+    }
+}
+
+
+Dispatch Job:
+
+SendEmailJob::dispatch($user);
+
+
+Queue Run:
+
+php artisan queue:work
+
+2. Events & Listeners
+
+Event = কিছু ঘটার পর Action Trigger।
+Listener = সেই Event Handle করে Action নেয়।
+
+Create Event & Listener:
+
+php artisan make:event UserRegistered
+php artisan make:listener SendWelcomeEmail --event=UserRegistered
+
+
+Event Trigger:
+
+event(new UserRegistered($user));
+
+
+Listener Handle:
+
+public function handle(UserRegistered $event){
+    Mail::to($event->user->email)->send(new WelcomeMail($event->user));
+}
+
+3. Broadcasting
+
+Real-time communication এর জন্য।
+
+ব্যবহার হয় Pusher + Laravel Echo।
+
+Broadcast Event:
+
+php artisan make:event MessageSent
+
+class MessageSent implements ShouldBroadcast
+{
+    public $message;
+
+    public function __construct($message){
+        $this->message = $message;
+    }
+
+    public function broadcastOn(){
+        return new Channel('chat');
+    }
+}
+
+
+Frontend (JS / Vue / React)
+
+Echo.channel('chat')
+    .listen('MessageSent', (e) => {
+        console.log(e.message);
+    });
+
+4. Task Scheduling
+
+Laravel scheduler দিয়ে Cron Jobs চালানো যায়।
+
+Schedule Example:
+app/Console/Kernel.php
+
+protected function schedule(Schedule $schedule){
+    $schedule->command('emails:send')->daily();
+}
+
+
+Run Scheduler:
+
+* * * * * php /path-to-your-project/artisan schedule:run >> /dev/null 2>&1
+
+5. Advanced Eloquent
+
+Scopes: Reusable Query
+
+public function scopeActive($query){
+    return $query->where('status',1);
+}
+
+// Use
+User::active()->get();
+
+
+Mutators & Accessors:
+
+// Accessor
+public function getNameAttribute($value){
+    return ucfirst($value);
+}
+
+// Mutator
+public function setNameAttribute($value){
+    $this->attributes['name'] = strtolower($value);
+}
+
+
+Eager Loading:
+
+$users = User::with('posts')->get();
+
+6. Service Container & Service Provider
+
+Laravel এর Dependency Injection System।
+
+ServiceProvider দিয়ে Custom Service bind করা যায়।
+
+Bind Example:
+
+app()->bind('HelpService', function(){
+    return new \App\Services\HelpService;
+});
+
+
+Use in Controller:
+
+public function index(\App\Services\HelpService $help){
+    $help->doSomething();
+}
+
+7. API Authentication
+
+Sanctum (SPA / Token Auth)
+
+composer require laravel/sanctum
+php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"
+
+
+User model:
+
+use Laravel\Sanctum\HasApiTokens;
+
+
+Generate Token:
+
+$token = $user->createToken('token-name')->plainTextToken;
+
+
+Protect API:
+
+Route::middleware('auth:sanctum')->get('/user', function(Request $request){
+    return $request->user();
+});
+
+
+Passport (Full OAuth2)
+
+API authentication & Token system।
+
+More advanced, suitable for 3rd-party apps।
+
+8. Caching
+
+Laravel supports multiple cache drivers: file, database, Redis, Memcached।
+
+Example:
+
+// Put value
+Cache::put('key','value', 60); // 60 minutes
+
+// Get value
+$value = Cache::get('key');
+
+// Remember
+$value = Cache::remember('users', 60, function(){
+    return User::all();
+});
+
+9. Testing
+
+Laravel supports Unit Test & Feature Test।
+
+Create Test:
+
+php artisan make:test UserTest
+
+
+Example (Feature Test):
+
+public function test_user_can_register(){
+    $response = $this->post('/register', [
+        'name'=>'Rafia',
+        'email'=>'rafia@example.com',
+        'password'=>'password',
+        'password_confirmation'=>'password'
+    ]);
+    $response->assertStatus(302); // Redirect after register
+}
+
+
+Run Tests:
+
+php artisan test
+
+10. Deployment & Optimization
+
+.env configuration: Database, APP_URL, MAIL settings।
+
+Optimize:
+
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+php artisan optimize
+
+
+Queue / Scheduler production এ Supervisor দিয়ে চালাতে হবে।
+
+Server Recommendations:
+
+PHP 8+
+
+MySQL / MariaDB
+
+Redis (Cache & Queue)
+
+Nginx / Apache
+
+✅ এটাই হলো Laravel Advanced Notes (Full Detailed with Examples)।

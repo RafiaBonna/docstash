@@ -1,0 +1,499 @@
+✨ Laravel Notes (Basic থেকে Advanced)
+1. Laravel কি?
+
+Laravel হলো PHP Framework (MVC – Model, View, Controller ভিত্তিক)
+
+Taylor Otwell 2011 সালে তৈরি করেন
+
+Features:
+
+Elegant syntax (সহজ ও সুন্দর কোড লেখা যায়)
+
+MVC আর্কিটেকচার সাপোর্ট করে
+
+Routing System
+
+Eloquent ORM (ডাটাবেস ম্যানেজ করার জন্য)
+
+Blade Templating Engine
+
+Authentication & Security
+
+Artisan Command Line Tool
+
+2. Laravel Install করা
+
+Requirement:
+
+PHP 8+
+
+Composer (dependency manager)
+
+MySQL / MariaDB
+
+Command দিয়ে ইনস্টল:
+
+composer create-project laravel/laravel project_name
+
+
+Local server run করতে:
+
+php artisan serve
+
+
+→ Default: http://127.0.0.1:8000
+
+3. Laravel Directory Structure
+
+app/ → Model, Controller, Middleware ইত্যাদি
+
+routes/web.php → ওয়েব রাউট (UI related)
+
+routes/api.php → API routes
+
+resources/views/ → Blade template files
+
+database/migrations/ → Database table structure
+
+public/ → CSS, JS, Images
+
+config/ → Laravel configuration
+
+4. Routing
+
+সব route define হয় routes/web.php এ
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+
+Example with controller:
+
+Route::get('/about', [AboutController::class, 'index']);
+
+5. Controller
+
+Controller তৈরি করতে:
+
+php artisan make:controller UserController
+
+
+Example:
+
+class UserController extends Controller {
+    public function index() {
+        return "This is user page";
+    }
+}
+
+6. Model & Database
+
+Model তৈরি করতে:
+
+php artisan make:model User -m
+
+
+(-m মানে migration ফাইলও তৈরি হবে)
+
+Migration Example:
+
+Schema::create('users', function (Blueprint $table) {
+    $table->id();
+    $table->string('name');
+    $table->string('email')->unique();
+    $table->timestamps();
+});
+
+
+Migration রান করতে:
+
+php artisan migrate
+
+7. Eloquent ORM
+
+Laravel এর Database query করার system।
+
+// Insert
+$user = new User();
+$user->name = "Rafia";
+$user->email = "rafia@example.com";
+$user->save();
+
+// Read
+$users = User::all();
+
+// Update
+$user = User::find(1);
+$user->name = "Updated Name";
+$user->save();
+
+// Delete
+User::destroy(1);
+
+8. Blade Template
+
+View তৈরি হয় .blade.php ফাইল দিয়ে।
+Example: resources/views/home.blade.php
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Laravel</title>
+</head>
+<body>
+    <h1>Hello, {{ $name }}</h1>
+</body>
+</html>
+
+
+Controller থেকে পাঠানো:
+
+return view('home', ['name' => 'Rafia']);
+
+9. Artisan Commands (Most Used)
+
+php artisan serve → server run
+
+php artisan make:controller NameController
+
+php artisan make:model Name -m
+
+php artisan migrate
+
+php artisan tinker → interact with app
+
+php artisan route:list → সব route দেখার জন্য
+
+10. Authentication
+
+Laravel এ Ready-made auth আছে:
+
+composer require laravel/ui
+php artisan ui vue --auth
+php artisan migrate
+
+
+→ Login, Register, Forgot Password সব ready.
+
+📌 Next Step (Intermediate & Advanced)
+
+Middleware
+
+Request Validation
+
+File Upload
+
+API (Passport / Sanctum)
+
+Relationships (One-to-One, One-to-Many, Many-to-Many)
+
+Queues & Jobs
+
+Event & Listener
+
+Notification & Mail
+
+📘 Laravel Basic Notes (Full Detailed)
+1. Laravel কী?
+
+Laravel হলো একটি PHP Framework যা MVC (Model-View-Controller) আর্কিটেকচারের উপর ভিত্তি করে তৈরি।
+
+Model (M): ডাটাবেজের সাথে কাজ করে।
+
+View (V): HTML/CSS/Blade দিয়ে ইউজার ইন্টারফেস তৈরি করে।
+
+Controller (C): Model আর View এর মাঝে ব্রিজ হিসেবে কাজ করে। লজিক লিখি এখানে।
+
+👉 সহজ করে বললে:
+User → Request পাঠায় → Route → Controller → Model থেকে Data আনে → View এ পাঠায় → Response যায় User এর কাছে।
+
+Laravel কেন জনপ্রিয়?
+
+সহজ syntax
+
+Security built-in
+
+Ready-made Authentication
+
+Database management সহজ (Eloquent ORM)
+
+Blade template দিয়ে dynamic HTML বানানো সহজ
+
+Artisan command line টুল
+
+2. Installation & Requirements
+Requirement:
+
+PHP 8.1 বা তার বেশি
+
+Composer (PHP dependency manager)
+
+MySQL/MariaDB (Database)
+
+Laravel Installer (ঐচ্ছিক)
+
+Installation (Step by Step):
+
+টার্মিনালে লিখো:
+
+composer create-project laravel/laravel blog
+
+
+👉 এখানে blog হলো project name।
+
+প্রজেক্ট ফোল্ডারে ঢুকো:
+
+cd blog
+
+
+সার্ভার চালাও:
+
+php artisan serve
+
+
+👉 Default URL: http://127.0.0.1:8000
+
+3. Laravel Directory Structure
+
+📂 গুরুত্বপূর্ণ ফোল্ডারসমূহ:
+
+app/
+
+Controllers, Models, Middleware থাকে।
+
+routes/web.php
+
+Web routes define করা হয় এখানে।
+
+routes/api.php
+
+API routes এখানে থাকে।
+
+resources/views/
+
+Blade template (.blade.php) ফাইল।
+
+database/migrations/
+
+Database টেবিল তৈরি/পরিবর্তনের জন্য Migration ফাইল।
+
+public/
+
+Public assets (CSS, JS, Image)।
+
+config/
+
+প্রজেক্ট কনফিগারেশন ফাইল।
+
+4. Routing
+
+Routing হলো URL → কোন ফাংশন চলবে তা নির্ধারণ করা।
+
+Basic Route:
+
+Route::get('/', function () {
+    return "Welcome to Laravel!";
+});
+
+
+With Parameters:
+
+Route::get('/user/{id}', function ($id) {
+    return "User ID: " . $id;
+});
+
+
+Optional Parameter:
+
+Route::get('/user/{name?}', function ($name = "Guest") {
+    return "Hello " . $name;
+});
+
+
+With Controller:
+
+Route::get('/about', [AboutController::class, 'index']);
+
+5. Controller
+
+Controller হলো PHP Class, যেখানে Business Logic লেখা হয়।
+
+Controller তৈরি:
+
+php artisan make:controller UserController
+
+
+Example:
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+
+class UserController extends Controller {
+    public function index() {
+        return "This is User Page";
+    }
+
+    public function show($id) {
+        return "User ID is " . $id;
+    }
+}
+
+
+Route:
+
+Route::get('/users', [UserController::class, 'index']);
+Route::get('/users/{id}', [UserController::class, 'show']);
+
+6. Model & Migration
+
+Model = Database table এর সাথে কাজ করার জন্য Class।
+Migration = Table তৈরি/পরিবর্তন করার জন্য ফাইল।
+
+Model + Migration একসাথে তৈরি:
+
+php artisan make:model User -m
+
+
+এতে app/Models/User.php (Model) আর database/migrations/xxxx_create_users_table.php (Migration) তৈরি হবে।
+
+Migration Example:
+
+public function up() {
+    Schema::create('users', function (Blueprint $table) {
+        $table->id();
+        $table->string('name');
+        $table->string('email')->unique();
+        $table->timestamps();
+    });
+}
+
+
+Migration চালানো:
+
+php artisan migrate
+
+
+👉 এতে database এ users টেবিল তৈরি হবে।
+
+7. Eloquent ORM
+
+Eloquent হলো Laravel এর Database ORM (Object Relational Mapper)।
+এর মাধ্যমে SQL লিখা ছাড়া সহজভাবে ডাটাবেজে কাজ করা যায়।
+
+Insert:
+
+$user = new User();
+$user->name = "Rafia";
+$user->email = "rafia@example.com";
+$user->save();
+
+
+Read:
+
+$users = User::all();          // সব ইউজার
+$user  = User::find(1);        // ID=1 ইউজার
+$user  = User::where('name','Rafia')->first(); // শর্ত দিয়ে ডাটা
+
+
+Update:
+
+$user = User::find(1);
+$user->name = "Updated Name";
+$user->save();
+
+
+Delete:
+
+User::destroy(1);
+
+8. Blade Template Engine
+
+Blade হলো Laravel এর Template Engine, যা দিয়ে সহজে Dynamic HTML বানানো যায়।
+
+Example: resources/views/home.blade.php
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Laravel</title>
+</head>
+<body>
+    <h1>Hello, {{ $name }}</h1>
+</body>
+</html>
+
+
+Controller:
+
+return view('home', ['name' => 'Rafia']);
+
+
+Blade Features:
+
+Variable: {{ $name }}
+
+Condition:
+
+@if($age > 18)
+   You are adult.
+@else
+   You are minor.
+@endif
+
+
+Loop:
+
+@foreach($users as $user)
+   <p>{{ $user->name }}</p>
+@endforeach
+
+
+Layouts:
+
+{{-- layout.blade.php --}}
+<html>
+  <body>
+    @yield('content')
+  </body>
+</html>
+
+{{-- home.blade.php --}}
+@extends('layout')
+@section('content')
+   <h1>Welcome Home!</h1>
+@endsection
+
+9. Artisan Commands
+
+Laravel এর Built-in Command Line টুল হলো Artisan।
+
+Most Used Commands:
+
+php artisan serve → Server চালু
+
+php artisan make:controller NameController → Controller তৈরি
+
+php artisan make:model User -m → Model + Migration
+
+php artisan migrate → Migration চালানো
+
+php artisan route:list → সব Route দেখা
+
+php artisan tinker → Direct Database এ কাজ করার জন্য
+
+10. Authentication (Basic Ready-Made)
+
+Laravel এ Login, Register, Password Reset ইত্যাদি Ready-made Authentication আছে।
+
+Install:
+
+composer require laravel/ui
+php artisan ui vue --auth
+php artisan migrate
+
+
+👉 এখন /login, /register route পাওয়া যাবে।
+
+✅ এটাই হলো Laravel Basic (Full Detailed Notes with Example)।

@@ -1,0 +1,956 @@
+📘 ReactJS Documentation Notes
+1. ReactJS Introduction
+
+ReactJS হলো Facebook (Meta) দ্বারা তৈরি করা একটি JavaScript লাইব্রেরি।
+
+মূল কাজ → UI (User Interface) বানানো।
+
+বৈশিষ্ট্য:
+
+Component Based Architecture
+
+Declarative (UI কেমন হবে সেটা বলে দাও, React সেটা বানায়)
+
+Virtual DOM ব্যবহার করে fast rendering
+
+Reusable Components
+
+2. Core Concepts
+a) Components
+
+Components = ছোট ছোট reusable UI অংশ।
+
+দুই ধরনের Component:
+
+Functional Component (modern, hooks ব্যবহার করে)
+
+Class Component (পুরনো style, এখন কম ব্যবহার হয়)
+
+b) JSX (JavaScript XML)
+
+JavaScript + HTML মিশ্র syntax।
+
+Example:
+
+const element = <h1>Hello React!</h1>;
+
+c) Props
+
+Props = Properties
+
+Component এ data পাঠানোর উপায়।
+
+Example:
+
+function Welcome(props) {
+  return <h1>Hello, {props.name}</h1>;
+}
+
+d) State
+
+Component এর ভেতরের data যেটা পরিবর্তন হতে পারে।
+
+Functional Component এ → useState hook ব্যবহার করা হয়।
+
+import { useState } from "react";
+
+function Counter() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <div>
+      <p>{count}</p>
+      <button onClick={() => setCount(count + 1)}>Increase</button>
+    </div>
+  );
+}
+
+e) Events
+
+React এ events camelCase হয়: onClick, onChange ইত্যাদি।
+
+<button onClick={handleClick}>Click Me</button>
+
+3. React Hooks
+a) useState
+
+State ম্যানেজ করার জন্য।
+
+b) useEffect
+
+Side effects (API call, timer, DOM update) করার জন্য।
+
+c) useContext
+
+Props drilling ছাড়াই data শেয়ার করার জন্য।
+
+d) useRef
+
+DOM element বা mutable value ধরার জন্য।
+
+e) useReducer
+
+Complex state management এর জন্য।
+
+4. React Lifecycle (Class Component এ বেশি ব্যবহৃত)
+
+Mounting → componentDidMount
+
+Updating → componentDidUpdate
+
+Unmounting → componentWillUnmount
+
+(Functional components এ এগুলো useEffect দিয়ে handle করা হয়)
+
+5. React Router
+
+Single Page Application (SPA) বানাতে ব্যবহৃত।
+
+পেজ পরিবর্তন না করে URL পরিবর্তন হয়।
+
+Example:
+
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+
+function App() {
+  return (
+    <BrowserRouter>
+      <nav>
+        <Link to="/">Home</Link>
+        <Link to="/about">About</Link>
+      </nav>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+6. React with API
+
+Fetch API বা Axios দিয়ে ডেটা আনা হয়।
+
+সাধারণত useEffect এর ভেতর ব্যবহার করা হয়।
+
+import { useEffect, useState } from "react";
+
+function Users() {
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    fetch("https://jsonplaceholder.typicode.com/users")
+      .then(res => res.json())
+      .then(data => setUsers(data));
+  }, []);
+
+  return (
+    <ul>
+      {users.map(user => <li key={user.id}>{user.name}</li>)}
+    </ul>
+  );
+}
+
+7. Advanced Topics
+
+Context API → global state management।
+
+Redux / Zustand / Recoil → বড় প্রোজেক্টে state management।
+
+React Query / SWR → API data cache + sync।
+
+Custom Hooks → নিজের hook বানিয়ে reuse করা যায়।
+
+8. React Best Practices
+
+✅ Components ছোট রাখা
+✅ Meaningful নাম দেওয়া
+✅ Reusable component বানানো
+✅ Folder structure ঠিক রাখা
+✅ PropTypes / TypeScript দিয়ে type-checking
+
+9. React Project Structure (Basic)
+my-app/
+  ├── public/
+  ├── src/
+  │   ├── components/
+  │   │   └── Navbar.jsx
+  │   ├── pages/
+  │   │   └── Home.jsx
+  │   ├── App.jsx
+  │   ├── index.jsx
+  │   └── styles/
+  │       └── App.css
+  ├── package.json
+📘 ReactJS Notes (Continuation from Previous)
+6. React Router (Routing in React)
+🔹 কেন দরকার?
+
+React হলো Single Page Application (SPA) → মানে পুরো সাইট একটা HTML ফাইল দিয়ে লোড হয়।
+
+আলাদা আলাদা পেজ লোড হয় না, শুধু component পরিবর্তন হয়।
+
+Navigation এর জন্য react-router-dom ব্যবহার করা হয়।
+
+🔹 Installation
+npm install react-router-dom
+
+🔹 Basic Example
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import Home from "./pages/Home";
+import About from "./pages/About";
+
+function App() {
+  return (
+    <BrowserRouter>
+      <nav>
+        <Link to="/">Home</Link> | 
+        <Link to="/about">About</Link>
+      </nav>
+
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+🔹 Important Components
+
+BrowserRouter → Routing এর main wrapper।
+
+Routes → সব route define করা হয় এখানে।
+
+Route → প্রতিটি path ও তার সাথে কোন component render হবে সেটা বলে।
+
+Link → সাধারণ anchor ট্যাগের মতো, কিন্তু page reload না করে navigate করে।
+
+useParams() → Dynamic route parameter নিতে ব্যবহৃত হয়।
+
+useNavigate() → Programmatically route change করা যায়।
+
+🔹 Dynamic Route Example
+<Route path="/user/:id" element={<User />} />
+
+function User() {
+  let { id } = useParams();
+  return <h1>User ID: {id}</h1>;
+}
+
+7. React Forms
+🔹 Controlled Components
+
+Form input element গুলো React state দ্বারা control করা হয়।
+
+import { useState } from "react";
+
+function MyForm() {
+  const [name, setName] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    alert(`Hello ${name}`);
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input 
+        type="text" 
+        value={name} 
+        onChange={(e) => setName(e.target.value)} 
+      />
+      <button type="submit">Submit</button>
+    </form>
+  );
+}
+
+🔹 Uncontrolled Components
+
+React state এর বদলে ref ব্যবহার করা হয়।
+
+import { useRef } from "react";
+
+function MyForm() {
+  const inputRef = useRef();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    alert(`Hello ${inputRef.current.value}`);
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input type="text" ref={inputRef} />
+      <button type="submit">Submit</button>
+    </form>
+  );
+}
+
+8. React with API (Data Fetching)
+🔹 Using Fetch API
+import { useEffect, useState } from "react";
+
+function Users() {
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    fetch("https://jsonplaceholder.typicode.com/users")
+      .then(res => res.json())
+      .then(data => setUsers(data));
+  }, []);
+
+  return (
+    <ul>
+      {users.map(u => <li key={u.id}>{u.name}</li>)}
+    </ul>
+  );
+}
+
+🔹 Using Axios
+npm install axios
+
+import { useEffect, useState } from "react";
+import axios from "axios";
+
+function Users() {
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    axios.get("https://jsonplaceholder.typicode.com/users")
+         .then(res => setUsers(res.data));
+  }, []);
+
+  return (
+    <ul>
+      {users.map(u => <li key={u.id}>{u.name}</li>)}
+    </ul>
+  );
+}
+
+9. Context API (State Sharing Without Props)
+🔹 Problem: Props Drilling
+
+যখন parent → child → grandchild এর মধ্যে অনেক data পাঠাতে হয়, তখন props drilling ঝামেলা হয়।
+
+Context API দিয়ে global state শেয়ার করা যায়।
+
+🔹 Example:
+import { createContext, useContext, useState } from "react";
+
+const UserContext = createContext();
+
+function App() {
+  const [user, setUser] = useState("Rafia");
+  return (
+    <UserContext.Provider value={user}>
+      <Navbar />
+    </UserContext.Provider>
+  );
+}
+
+function Navbar() {
+  return <Profile />;
+}
+
+function Profile() {
+  const user = useContext(UserContext);
+  return <h1>Hello, {user}</h1>;
+}
+
+10. State Management with Redux
+🔹 কেন দরকার?
+
+যখন অ্যাপ বড় হয়, তখন শুধু props/state দিয়ে manage করা কঠিন হয়ে যায়।
+
+Redux একটি centralized store দেয় যেখানে সব state রাখা হয়।
+
+🔹 Install
+npm install redux react-redux
+
+🔹 Basic Flow
+
+Store → Central place for state।
+
+Action → কী করতে হবে সেটা বলে।
+
+Reducer → State কিভাবে update হবে সেটা বলে।
+
+Dispatch → Action পাঠানো হয়।
+
+11. Performance Optimization
+Techniques:
+
+React.memo() → Component memoize করে, props না বদলালে re-render হয় না।
+
+useMemo() → Expensive calculation memoize করে।
+
+useCallback() → Function re-render হওয়া বন্ধ করে।
+
+Lazy Loading → Code-splitting এর মাধ্যমে performance improve হয়।
+
+import React, { memo } from "react";
+
+const Child = memo(({ name }) => {
+  console.log("Rendered");
+  return <h1>{name}</h1>;
+});
+
+12. Best Practices
+
+✅ Components ছোট রাখা
+✅ Meaningful নাম ব্যবহার করা
+✅ Folder structure ঠিক রাখা
+✅ Reusable code লেখা
+✅ PropTypes বা TypeScript ব্যবহার করা
+✅ Unnecessary re-render এড়ানো
+📘 ReactJS Notes (Continuation)
+13. React Testing
+
+React অ্যাপ্লিকেশন টেস্ট করার জন্য সবচেয়ে বেশি ব্যবহার হয়:
+
+Jest (JavaScript testing framework)
+
+React Testing Library (RTL) (DOM টেস্টিং এর জন্য)
+
+🔹 কেন টেস্ট দরকার?
+
+কোডে bug আগে থেকে ধরতে।
+
+Component ঠিক মতো কাজ করছে কিনা verify করতে।
+
+Future changes এ কোড ভেঙে যাচ্ছে কিনা চেক করতে।
+
+🔹 Setup (Jest + RTL)
+
+যদি তুমি Create React App (CRA) ব্যবহার করো → Jest & RTL by default ই আসে।
+Vite প্রোজেক্ট হলে → আলাদা করে ইন্সটল করতে হয়।
+
+npm install --save-dev jest @testing-library/react @testing-library/jest-dom
+
+🔹 Basic Test Example
+
+Component:
+
+function Greeting({ name }) {
+  return <h1>Hello, {name}</h1>;
+}
+
+export default Greeting;
+
+
+Test File (Greeting.test.js):
+
+import { render, screen } from "@testing-library/react";
+import Greeting from "./Greeting";
+
+test("renders greeting message", () => {
+  render(<Greeting name="Rafia" />);
+  const element = screen.getByText(/Hello, Rafia/i);
+  expect(element).toBeInTheDocument();
+});
+
+🔹 User Events Testing
+import { render, screen, fireEvent } from "@testing-library/react";
+import { useState } from "react";
+
+function Counter() {
+  const [count, setCount] = useState(0);
+  return (
+    <>
+      <p>{count}</p>
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+    </>
+  );
+}
+
+test("increments count", () => {
+  render(<Counter />);
+  const button = screen.getByText(/Increment/i);
+  fireEvent.click(button);
+  expect(screen.getByText("1")).toBeInTheDocument();
+});
+
+14. React Deployment
+
+React অ্যাপ তৈরি করার পর সেটাকে Build করে server এ host করতে হয়।
+
+🔹 Step 1: Production Build তৈরি করা
+npm run build
+
+
+👉 build/ ফোল্ডার তৈরি হবে, এতে optimized static files থাকবে।
+
+🔹 Step 2: Deployment Options
+a) Netlify (Easy & Free)
+
+Netlify এ গিয়ে New Site from Git এ ক্লিক করো।
+
+GitHub রিপোজিটরি কানেক্ট করো।
+
+Build command: npm run build
+
+Publish directory: build
+
+b) Vercel (Fast, Popular)
+
+Vercel এ গিয়ে New Project এ ক্লিক করো।
+
+GitHub রিপোজিটরি কানেক্ট করো।
+
+Framework detect হয়ে যাবে।
+
+Deploy ক্লিক করলেই লাইভ হয়ে যাবে।
+
+c) GitHub Pages
+
+প্যাকেজ ইনস্টল করো:
+
+npm install gh-pages --save-dev
+
+
+package.json এ যোগ করো:
+
+"homepage": "https://username.github.io/repo-name",
+"scripts": {
+  "predeploy": "npm run build",
+  "deploy": "gh-pages -d build"
+}
+
+
+Run:
+
+npm run deploy
+
+d) Custom Hosting (cPanel, VPS, Firebase, AWS, etc.)
+
+Build folder কে hosting server এ upload করতে হয়।
+
+Example: Firebase
+
+npm install -g firebase-tools
+firebase login
+firebase init
+firebase deploy
+
+🔹 Deployment Checklist
+
+✅ npm run build দিয়ে production build তৈরি করতে হবে।
+✅ .env ফাইলে environment variable গুলো production-ready কিনা চেক করতে হবে।
+✅ API endpoint গুলো সঠিক server এর সাথে যুক্ত আছে কিনা দেখতে হবে।
+
+15. React Interview Preparation (Quick Topics)
+
+React vs Angular vs Vue
+
+Virtual DOM কী?
+
+Props vs State
+
+useEffect vs useLayoutEffect
+
+Controlled vs Uncontrolled Components
+
+Context API vs Redux
+
+React performance optimization techniques
+
+React lifecycle methods
+7. React Hooks
+
+React v16.8 এ Hooks এসেছে। এগুলো ব্যবহার করে আমরা state ও lifecycle features ফাংশনাল কম্পোনেন্টে ব্যবহার করতে পারি (আগে শুধু class component-এ সম্ভব ছিল)।
+
+7.1 useState
+
+Function component-এ state ম্যানেজ করার জন্য ব্যবহার হয়।
+
+Syntax:
+
+import { useState } from "react";
+
+function Counter() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+    </div>
+  );
+}
+
+
+এখানে count হচ্ছে state ভ্যালু, আর setCount হচ্ছে state আপডেট করার ফাংশন।
+
+7.2 useEffect
+
+Lifecycle method (componentDidMount, componentDidUpdate, componentWillUnmount) এর বিকল্প।
+
+মূলত side effect এর জন্য ব্যবহৃত হয় (যেমন: API call, event listener, DOM manipulation)।
+
+Syntax:
+
+import { useState, useEffect } from "react";
+
+function Example() {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    fetch("https://api.example.com/items")
+      .then(res => res.json())
+      .then(data => setData(data));
+  }, []); // dependency array
+
+  return <ul>{data.map(item => <li key={item.id}>{item.name}</li>)}</ul>;
+}
+
+
+[] দিলে effect শুধু একবার (component mount হলে) রান করবে।
+
+dependency দিলে ([count]) – count পরিবর্তন হলেই effect রান করবে।
+
+7.3 useContext
+
+Props drilling এড়ানোর জন্য ব্যবহার করা হয়।
+
+Context API এর সাথে মিলে কাজ করে।
+
+Example:
+
+import { createContext, useContext } from "react";
+
+const UserContext = createContext();
+
+function App() {
+  return (
+    <UserContext.Provider value="Rafia">
+      <Profile />
+    </UserContext.Provider>
+  );
+}
+
+function Profile() {
+  const user = useContext(UserContext);
+  return <h1>Hello, {user}</h1>;
+}
+
+7.4 useRef
+
+DOM element বা mutable value ট্র্যাক করার জন্য ব্যবহৃত হয়।
+
+Example:
+
+import { useRef } from "react";
+
+function TextInput() {
+  const inputRef = useRef();
+
+  const focusInput = () => {
+    inputRef.current.focus();
+  };
+
+  return (
+    <div>
+      <input ref={inputRef} type="text" />
+      <button onClick={focusInput}>Focus</button>
+    </div>
+  );
+}
+
+7.5 useReducer
+
+Complex state ম্যানেজ করার জন্য ব্যবহার হয় (Redux-এর মতো কাজ করে)।
+
+Example:
+
+import { useReducer } from "react";
+
+const initialState = 0;
+
+function reducer(state, action) {
+  switch (action.type) {
+    case "increment": return state + 1;
+    case "decrement": return state - 1;
+    default: return state;
+  }
+}
+
+function Counter() {
+  const [count, dispatch] = useReducer(reducer, initialState);
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={() => dispatch({ type: "increment" })}>+</button>
+      <button onClick={() => dispatch({ type: "decrement" })}>-</button>
+    </div>
+  );
+}
+
+7.6 Custom Hooks
+
+Reusable logic বানানোর জন্য ব্যবহার হয়।
+
+Example:
+
+import { useState, useEffect } from "react";
+
+function useFetch(url) {
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    fetch(url)
+      .then(res => res.json())
+      .then(setData);
+  }, [url]);
+
+  return data;
+}
+
+function App() {
+  const users = useFetch("https://api.example.com/users");
+  return <div>{JSON.stringify(users)}</div>;
+}
+
+
+
+React সম্পূর্ণ নোট (বাংলায়, Basic থেকে Advanced)
+১. React কি?
+
+React একটি JavaScript library, যা User Interface (UI) তৈরি করার জন্য ব্যবহৃত হয়।
+
+React তৈরি করেছে Facebook।
+
+এটি Component-based, অর্থাৎ UI কে ছোট ছোট অংশে ভাগ করা যায়।
+
+Virtual DOM ব্যবহার করে দ্রুত রেন্ডার করে এবং performance উন্নত করে।
+
+React এর প্রধান ফিচারসমূহ:
+
+JSX → JavaScript এর মধ্যে HTML এর মতো কোড লেখা।
+
+Components → পুনঃব্যবহারযোগ্য UI ব্লক।
+
+State & Props → ডাটা ম্যানেজমেন্ট।
+
+Hooks → ফাংশন কম্পোনেন্টে state ও lifecycle ব্যবস্থাপনা।
+
+Single Page Application (SPA) বানানো সম্ভব।
+
+২. React সেটআপ
+
+Create React App ব্যবহার করে:
+
+npx create-react-app my-app
+cd my-app
+npm start
+
+
+অ্যাপটি চালু হবে: http://localhost:3000
+
+ফোল্ডার স্ট্রাকচার:
+
+my-app/
+├─ public/          // Static files
+├─ src/
+│  ├─ App.js        // Main component
+│  ├─ index.js      // Entry point
+│  ├─ components/   // Custom components
+│  └─ ...
+├─ package.json
+
+৩. JSX (JavaScript XML)
+
+JSX = JavaScript + HTML এর মতো সিনট্যাক্স।
+
+উদাহরণ:
+
+const element = <h1>হ্যালো, রাফিয়া!</h1>;
+
+
+নিয়মাবলী:
+
+একটি parent element থাকা বাধ্যতামূলক।
+
+class এর পরিবর্তে className ব্যবহার।
+
+{} ব্যবহার করে JavaScript expression লেখা যায়।
+
+৪. Components
+৪.১ Function Component
+function Greeting() {
+  return <h1>হ্যালো, রাফিয়া!</h1>;
+}
+
+৪.২ Arrow Function Component
+const Greeting = () => <h1>হ্যালো, রাফিয়া!</h1>;
+
+৪.৩ Class Component
+import React, { Component } from "react";
+
+class Greeting extends Component {
+  render() {
+    return <h1>হ্যালো, রাফিয়া!</h1>;
+  }
+}
+
+৫. Props (Properties)
+
+Props হল Component এর ইনপুট ডাটা।
+
+function Greeting({ name }) {
+  return <h1>হ্যালো, {name}!</h1>;
+}
+
+// ব্যবহার:
+<Greeting name="রাফিয়া" />
+
+৬. State
+
+State হল Component এর dynamic ডাটা।
+
+Function Component এ useState hook ব্যবহার হয়।
+
+import { useState } from "react";
+
+function Counter() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <div>
+      <h1>{count}</h1>
+      <button onClick={() => setCount(count + 1)}>বৃদ্ধি করো</button>
+    </div>
+  );
+}
+
+৭. ইভেন্ট হ্যান্ডলিং
+function Button() {
+  const handleClick = () => alert("ক্লিক হয়েছে!");
+  return <button onClick={handleClick}>ক্লিক করো</button>;
+}
+
+
+সাধারণ ইভেন্টস: onClick, onChange, onSubmit, onMouseOver ইত্যাদি।
+
+৮. Conditional Rendering (শর্তাধীন রেন্ডারিং)
+function User({ isLoggedIn }) {
+  return <div>{isLoggedIn ? "স্বাগতম!" : "দয়া করে লগইন করুন"}</div>;
+}
+
+৯. Lists & Keys
+const users = ["রাফিয়া", "বননা", "আলি"];
+
+<ul>
+  {users.map((user, index) => (
+    <li key={index}>{user}</li>
+  ))}
+</ul>
+
+
+Key দিতে হয়, যাতে React efficiently রেন্ডার করতে পারে।
+
+১০. Forms
+function MyForm() {
+  const [name, setName] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    alert(name);
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input value={name} onChange={(e) => setName(e.target.value)} />
+      <button type="submit">সাবমিট করো</button>
+    </form>
+  );
+}
+
+১১. Lifecycle Methods (Class Components)
+মেথড	ব্যবহার
+componentDidMount	রেন্ডার হওয়ার পরে
+componentDidUpdate	আপডেট হওয়ার পরে
+componentWillUnmount	আনমাউন্ট হওয়ার আগে
+
+Function Component এ useEffect ব্যবহার হয়:
+
+import { useEffect } from "react";
+
+useEffect(() => {
+  console.log("কম্পোনেন্ট মাউন্ট হয়েছে");
+  return () => console.log("কম্পোনেন্ট আনমাউন্টের আগে ক্লিনআপ");
+}, []);
+
+১২. React Router (Routing / Navigation)
+npm install react-router-dom
+
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Home from "./Home";
+import About from "./About";
+
+<BrowserRouter>
+  <Routes>
+    <Route path="/" element={<Home />} />
+    <Route path="/about" element={<About />} />
+  </Routes>
+</BrowserRouter>
+
+
+Link দিয়ে page change করতে পারো:
+
+import { Link } from "react-router-dom";
+
+<Link to="/about">About Page</Link>
+
+১৩. Hooks (Advanced)
+১৩.১ useState
+
+State declare ও update করার জন্য
+
+১৩.২ useEffect
+
+Component lifecycle manage করার জন্য
+
+১৩.৩ useContext
+
+Global state access করার জন্য
+
+১৩.৪ useReducer
+
+Complex state manage করার জন্য
+
+১৩.৫ Custom Hooks
+
+Reusable logic তৈরি করতে
+
+১৪. API Call / Data Fetching
+import { useEffect, useState } from "react";
+
+function Users() {
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    fetch("https://jsonplaceholder.typicode.com/users")
+      .then(res => res.json())
+      .then(data => setUsers(data));
+  }, []);
+
+  return (
+    <ul>
+      {users.map(u => <li key={u.id}>{u.name}</li>)}
+    </ul>
+  );
+}
+
+১৫. Best Practices
+
+Functional Component + Hooks ব্যবহার করো।
+
+Component ছোট এবং reusable রাখো।
+
+Folder structure clean রাখো।
+
+Direct DOM manipulation এড়িয়ে চলো।
+
+Proper naming convention maintain করো।

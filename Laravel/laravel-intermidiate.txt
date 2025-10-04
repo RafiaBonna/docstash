@@ -1,0 +1,227 @@
+📘 Laravel Intermediate Notes (Detailed)
+1. Middleware
+
+Middleware হলো Request এবং Response এর মধ্যে Filter/Logic।
+
+এটি Route বা Controller এর আগে কাজ করে।
+
+উদাহরণ: Authentication check, Admin check, Logging, CORS handling ইত্যাদি।
+
+Middleware তৈরি:
+
+php artisan make:middleware CheckUser
+
+
+Example (Admin Check):
+
+namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Http\Request;
+
+class CheckUser
+{
+    public function handle(Request $request, Closure $next)
+    {
+        if(auth()->user() && auth()->user()->is_admin){
+            return $next($request); // Continue
+        }
+        return redirect('/'); // Redirect if not admin
+    }
+}
+
+
+Middleware Route এ ব্যবহার:
+
+Route::get('/admin', function(){
+    return "Welcome Admin";
+})->middleware('checkuser');
+
+
+Middleware register করতে:
+app/Http/Kernel.php এ $routeMiddleware array তে add করতে হবে:
+
+'checkuser' => \App\Http\Middleware\CheckUser::class,
+
+2. Request Validation
+
+Laravel এ Form validation খুব সহজ।
+
+সব input validate করা যায়।
+
+Validation fail হলে automatically Redirect + Error messages।
+
+Example:
+
+use Illuminate\Http\Request;
+
+public function store(Request $request){
+    $request->validate([
+        'name' => 'required|min:3',
+        'email' => 'required|email|unique:users',
+        'password' => 'required|min:6'
+    ]);
+
+    // Data save
+    User::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => bcrypt($request->password)
+    ]);
+
+    return redirect()->back()->with('success', 'User created!');
+}
+
+3. File Upload
+
+Laravel এ File Upload করা সহজ।
+
+Single file বা multiple file Upload করা যায়।
+
+Single File Example:
+
+if($request->hasFile('image')){
+    $file = $request->file('image');
+    $filename = time().'_'.$file->getClientOriginalName();
+    $file->move(public_path('uploads'), $filename);
+}
+
+
+Multiple File Example:
+
+if($request->hasFile('images')){
+    foreach($request->file('images') as $file){
+        $filename = time().'_'.$file->getClientOriginalName();
+        $file->move(public_path('uploads'), $filename);
+    }
+}
+
+4. API Development
+
+API Route: routes/api.php
+
+Response as JSON:
+
+Example:
+
+Route::get('/users', [Api\UserController::class, 'index']);
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use App\Models\User;
+
+class UserController extends Controller
+{
+    public function index(){
+        $users = User::all();
+        return response()->json($users);
+    }
+}
+
+
+Access API: /api/users
+
+5. Relationships (Eloquent)
+
+1. One to One:
+
+// User.php
+public function profile(){
+    return $this->hasOne(Profile::class);
+}
+
+
+2. One to Many:
+
+// User.php
+public function posts(){
+    return $this->hasMany(Post::class);
+}
+
+
+3. Many to Many:
+
+// User.php
+public function roles(){
+    return $this->belongsToMany(Role::class);
+}
+
+
+4. Polymorphic Relationship:
+
+একই Table একাধিক Model এ Attachable।
+
+Example: Comment কে Post বা Video তে Attach করা।
+
+6. Resource Controller
+
+CRUD এর জন্য Resource Controller ব্যবহার হয়।
+
+php artisan make:controller PostController --resource
+
+
+Route:
+
+Route::resource('posts', PostController::class);
+
+
+Resource Methods:
+
+index, create, store, show, edit, update, destroy
+
+7. Seeder & Factory
+
+Seeder: Dummy Data Insert করার জন্য।
+
+php artisan make:seeder UserSeeder
+
+
+Example:
+
+use App\Models\User;
+User::factory()->count(10)->create();
+
+
+Run Seeder:
+
+php artisan db:seed --class=UserSeeder
+
+8. Pagination
+
+Example:
+
+$users = User::paginate(5);
+
+
+Blade Template:
+
+@foreach($users as $user)
+    <p>{{ $user->name }}</p>
+@endforeach
+
+{{ $users->links() }} <!-- Pagination Links -->
+
+9. Mail & Notification
+
+Mail Example:
+
+php artisan make:mail WelcomeMail
+
+
+Controller:
+
+use App\Mail\WelcomeMail;
+use Mail;
+
+Mail::to('user@example.com')->send(new WelcomeMail());
+
+
+Notification Example:
+
+php artisan make:notification UserNotification
+
+
+Supports database, mail, SMS, Slack, etc.
+
+✅ এটাই হলো Laravel Intermediate Notes (Full Detailed with Examples)।
