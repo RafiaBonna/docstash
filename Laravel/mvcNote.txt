@@ -97,3 +97,137 @@ MVC ব্যবহার করার প্রধান কারণ হলো
 সংক্ষেপে: Controller নির্দেশনা দেয়, Model ডেটা জোগাড় করে/হ্যান্ডেল করে, এবং View সেই ডেটা সুন্দরভাবে দেখায়।
 
 আশা করি, এখন MVC ধারণাটি আপনার কাছে পরিষ্কার হয়েছে! আপনার সাপ্লাই চেইন ম্যানেজমেন্ট সফটওয়্যার তৈরির কাজে এটি আপনাকে অনেক সাহায্য করবে।
+MVC আর্কিটেকচারটি Laravel-এর মধ্যে কীভাবে কাজ করে, তা যদি হাতে-কলমে উদাহরণ দিয়ে বুঝতে পারেন, তবে আপনার প্রজেক্ট শুরু করা অনেক সহজ হবে।
+
+আপনার Laravel SCM (Supply Chain Management) প্রজেক্টের একটি সাধারণ কাজের উদাহরণ দিয়ে নিচে ধাপে ধাপে বোঝানো হলো যে Model, View, এবং Controller কীভাবে একে অপরের সাথে যোগাযোগ করে:
+
+আমরা উদাহরণ হিসেবে একটি সাধারণ কাজ নিব: নতুন একটি প্রোডাক্ট তৈরি করা এবং ডেটাবেসে সেভ করা (Creating and Saving a new Product)।
+
+প্র্যাকটিক্যাল MVC ওয়ার্কফ্লো (Practical MVC Workflow)
+স্টেপ ০: রুট (Route) - এন্ট্রি পয়েন্ট
+অ্যাপ্লিকেশনে ট্র্যাফিক প্রথমে কোথায় যাবে, তা Route নির্ধারণ করে। এটি Controller-কে যুক্ত করার প্রথম ধাপ।
+
+কম্পোনেন্ট	লারাভেল ফাইল/কনসেপ্ট	কাজ
+Route	routes/web.php	ইউজার যখন কোনো URL-এ হিট করে, তখন সে কোন Controller-এর কোন ফাংশনে যাবে, তা ঠিক করা।
+
+Export to Sheets
+কোড উদাহরণ:
+
+PHP
+
+// routes/web.php
+
+Route::post('/product/store', [ProductController::class, 'store']);
+স্টেপ ১: Controller (C) - নির্দেশনা দেওয়া
+Controller-এর কাজ হলো ইউজারের কাছ থেকে ডেটা নেওয়া এবং Model-কে সেই ডেটা সেভ করার নির্দেশ দেওয়া।
+
+কম্পোনেন্ট	লারাভেল ফাইল/কনসেপ্ট	কাজ
+Controller	app/Http/Controllers/ProductController.php	HTTP রিকোয়েস্ট (ডেটা) গ্রহণ করা এবং মূল বিজনেস লজিক চালানো।
+
+Export to Sheets
+কোড উদাহরণ (ProductController.php-এর store ফাংশন):
+
+PHP
+
+<?php
+// ProductController.php
+
+namespace App\Http\Controllers;
+
+use App\Models\Product; // Model-কে ইম্পোর্ট করা হচ্ছে
+use Illuminate\Http\Request;
+
+class ProductController extends Controller
+{
+    public function store(Request $request)
+    {
+        // 1. ডেটা ভ্যালিডেশন (Validation)
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'sku' => 'required|unique:products',
+            'stock_quantity' => 'required|integer|min:0',
+        ]);
+
+        // 2. Model-কে ডেটা সেভ করার নির্দেশ দেওয়া
+        $product = Product::create([ // Model (Product)-কে ব্যবহার করা হচ্ছে
+            'name' => $request->name,
+            'sku' => $request->sku,
+            'stock_quantity' => $request->stock_quantity,
+        ]);
+
+        // 3. একটি View-কে রেজাল্ট দেখানোর জন্য নির্দেশ দেওয়া বা অন্য কোথাও রিডাইরেক্ট করা
+        return redirect('/products')->with('success', 'পণ্যটি সফলভাবে যুক্ত হয়েছে!');
+    }
+}
+স্টেপ ২: Model (M) - ডেটাবেস হ্যান্ডলিং
+Controller যখন Model-কে নির্দেশ দেয়, তখন Model সেই ডেটা নিয়ে ডেটাবেসের সাথে যোগাযোগ করে।
+
+কম্পোনেন্ট	লারাভেল ফাইল/কনসেপ্ট	কাজ
+Model	app/Models/Product.php	ডেটাবেস টেবিলের সাথে সরাসরি যোগাযোগ এবং ডেটা সংরক্ষণ। এটি Eloquent ORM ব্যবহার করে।
+
+Export to Sheets
+কোড উদাহরণ (Product.php):
+
+PHP
+
+<?php
+// Product.php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Product extends Model
+{
+    use HasFactory;
+    
+    // 1. এই Model-টি 'products' টেবিল-এর সাথে যুক্ত
+    protected $table = 'products'; 
+
+    // 2. সেভ করার জন্য কোন কোন ফিল্ডের অনুমতি আছে (Mass Assignment)
+    protected $fillable = [
+        'name',
+        'sku',
+        'stock_quantity',
+        'price',
+        // ... অন্যান্য ফিল্ড
+    ];
+
+    // *এখানে আপনি অন্যান্য Model-এর সাথে রিলেশনশিপ (Relationship) ডিফাইন করবেন, 
+    // যেমন: এই প্রোডাক্টটি কোন সাপ্লায়ারের (Supplier)।
+    
+    public function supplier()
+    {
+        return $this->belongsTo(Supplier::class); 
+    }
+}
+স্টেপ ৩: View (V) - ইউজারকে ফলাফল দেখানো
+Controller তার কাজ শেষে View-কে ডাকে এবং বলে, "এই ফলাফলটি সুন্দর করে ইউজারকে দেখাও।"
+
+কম্পোনেন্ট	লারাভেল ফাইল/কনসেপ্ট	কাজ
+View	resources/views/products/create.blade.php	ডেটা প্রদর্শন বা ডেটা ইনপুটের জন্য ফর্ম তৈরি করা।
+
+Export to Sheets
+কোড উদাহরণ (products/create.blade.php - ফর্ম):
+
+HTML
+
+<form method="POST" action="/product/store">
+    @csrf 
+    <label for="name">প্রোডাক্টের নাম:</label>
+    <input type="text" id="name" name="name" required>
+
+    <label for="stock_quantity">স্টক:</label>
+    <input type="number" id="stock_quantity" name="stock_quantity" required>
+    
+    <button type="submit">সেভ করুন</button>
+</form>
+সারসংক্ষেপ: MVC ও লারাভেল
+MVC কম্পোনেন্ট	Laravel কনসেপ্ট	মূল দায়িত্ব
+Controller (C)	ProductController.php	ট্র্যাফিক গ্রহণ, ইনপুট ভ্যালিডেশন, Model এবং View-এর মধ্যে সমন্বয় সাধন।
+Model (M)	Product.php (Eloquent)	ডেটাবেস (MySQL/PostgreSQL) থেকে ডেটা পড়া, লেখা, আপডেট করা। বিজনেস লজিক রাখা।
+View (V)	.blade.php ফাইল	ইউজার ইন্টারফেস (HTML) তৈরি করা এবং Controller থেকে আসা ডেটা প্রদর্শন করা।
+(অতিরিক্ত) Route	routes/web.php	Controller-এ যাওয়ার রাস্তা তৈরি করা।
+
+Export to Sheets
