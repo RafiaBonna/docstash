@@ -1,0 +1,3 @@
+database password-    vqIis38GV@Q1nTQx
+database username-rafiabon_scm_project
+database name- rafiabon_scm_project
