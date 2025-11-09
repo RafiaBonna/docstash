@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 09, 2025 at 08:32 AM
+-- Generation Time: Nov 08, 2025 at 08:53 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -59,6 +59,13 @@ CREATE TABLE `depos` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `depos`
+--
+
+INSERT INTO `depos` (`id`, `user_id`, `name`, `location`, `created_at`, `updated_at`) VALUES
+(2, 4, 'maya Depo', 'N/A', '2025-11-08 10:27:14', '2025-11-08 10:27:14');
 
 -- --------------------------------------------------------
 
@@ -151,9 +158,7 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (5, '2025_11_01_205851_create_distributors_table', 1),
 (6, '2025_11_07_192218_create_roles_table', 1),
 (7, '2025_11_07_194739_create_role_user_table', 1),
-(8, '2025_11_08_172956_create_suppliers_table', 1),
-(9, '2025_11_09_043719_create_raw_materials_table', 1),
-(10, '2025_11_09_062352_create_purchase_tables', 1);
+(8, '2025_11_08_172956_create_suppliers_table', 2);
 
 -- --------------------------------------------------------
 
@@ -165,76 +170,6 @@ CREATE TABLE `password_reset_tokens` (
   `email` varchar(255) NOT NULL,
   `token` varchar(255) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `purchase_invoices`
---
-
-CREATE TABLE `purchase_invoices` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `invoice_number` varchar(255) NOT NULL,
-  `supplier_id` bigint(20) UNSIGNED NOT NULL,
-  `invoice_date` date NOT NULL,
-  `sub_total` decimal(10,2) NOT NULL,
-  `discount_amount` decimal(10,2) NOT NULL DEFAULT 0.00,
-  `grand_total` decimal(10,2) NOT NULL,
-  `notes` text DEFAULT NULL,
-  `user_id` bigint(20) UNSIGNED NOT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `raw_materials`
---
-
-CREATE TABLE `raw_materials` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `unit_of_measure` varchar(255) NOT NULL COMMENT 'e.g., KG, Litre, Pcs',
-  `description` text DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `raw_material_purchase_items`
---
-
-CREATE TABLE `raw_material_purchase_items` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `purchase_invoice_id` bigint(20) UNSIGNED NOT NULL,
-  `raw_material_id` bigint(20) UNSIGNED NOT NULL,
-  `batch_number` varchar(255) NOT NULL,
-  `quantity` decimal(10,2) NOT NULL,
-  `unit_price` decimal(10,2) NOT NULL,
-  `total_price` decimal(10,2) NOT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `raw_material_stocks`
---
-
-CREATE TABLE `raw_material_stocks` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `raw_material_id` bigint(20) UNSIGNED NOT NULL,
-  `batch_number` varchar(255) NOT NULL,
-  `stock_quantity` decimal(10,2) NOT NULL,
-  `average_purchase_price` decimal(10,2) NOT NULL,
-  `last_in_date` date NOT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -258,9 +193,9 @@ CREATE TABLE `roles` (
 --
 
 INSERT INTO `roles` (`id`, `name`, `slug`, `description`, `status`, `created_at`, `updated_at`) VALUES
-(1, 'Super Admin', 'superadmin', 'Full access to the system.', 1, '2025-11-09 00:27:55', '2025-11-09 00:27:55'),
-(2, 'Depo Manager', 'depo', 'Depo level stock and distributor management.', 1, '2025-11-09 00:27:55', '2025-11-09 00:27:55'),
-(3, 'Distributor', 'distributor', 'Manages sales and customers.', 1, '2025-11-09 00:27:55', '2025-11-09 00:27:55');
+(1, 'Super Admin', 'superadmin', 'Full access to the system.', 1, '2025-11-08 10:25:10', '2025-11-08 10:25:10'),
+(2, 'Depo Manager', 'depo', 'Depo level stock and distributor management.', 1, '2025-11-08 10:25:10', '2025-11-08 10:25:10'),
+(3, 'Distributor', 'distributor', 'Manages sales and customers.', 1, '2025-11-08 10:25:10', '2025-11-08 10:25:10');
 
 -- --------------------------------------------------------
 
@@ -283,7 +218,8 @@ CREATE TABLE `role_user` (
 INSERT INTO `role_user` (`id`, `role_id`, `user_id`, `created_at`, `updated_at`) VALUES
 (1, 1, 1, NULL, NULL),
 (2, 2, 2, NULL, NULL),
-(3, 3, 3, NULL, NULL);
+(3, 3, 3, NULL, NULL),
+(4, 2, 4, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -305,7 +241,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('DwGAKGBXcTE3Uc42EzMpHns9RhELOCW4Z6jXzUMA', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiY0pPUUVYbUE1WFVWM2EyZTllVzRhQU5FVGp4dXlSUGdZS2hoT1EwaSI7czozOiJ1cmwiO2E6MDp7fXM6OToiX3ByZXZpb3VzIjthOjI6e3M6MzoidXJsIjtzOjU1OiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvc3VwZXJhZG1pbi9yYXctbWF0ZXJpYWwtcHVyY2hhc2VzIjtzOjU6InJvdXRlIjtzOjM5OiJzdXBlcmFkbWluLnJhdy1tYXRlcmlhbC1wdXJjaGFzZXMuaW5kZXgiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxO30=', 1762673396);
+('IjThqeKTZ2RseoIeInnFM52Hr87ROHbPKI19oOgo', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiNU9SWms5eVFUOFdJZTM5MWxhRk5CeXNPMHFrQTFzcVhQRmRzbGtHRiI7czozOiJ1cmwiO2E6MDp7fXM6OToiX3ByZXZpb3VzIjthOjI6e3M6MzoidXJsIjtzOjQyOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvc3VwZXJhZG1pbi9zdXBwbGllcnMiO3M6NToicm91dGUiO3M6MjY6InN1cGVyYWRtaW4uc3VwcGxpZXJzLmluZGV4Ijt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTt9', 1762630674);
 
 -- --------------------------------------------------------
 
@@ -330,7 +266,7 @@ CREATE TABLE `suppliers` (
 --
 
 INSERT INTO `suppliers` (`id`, `name`, `contact_person`, `phone`, `email`, `address`, `status`, `created_at`, `updated_at`) VALUES
-(1, 'supplier 1', 'ELity', '09876543', 'elite@gmail.com', 'Cumilla', 'active', '2025-11-09 00:57:48', '2025-11-09 00:57:48');
+(1, 'supplier One', 'rafia', '45678998', 'rafia@gmail.com', 'Dhaka', 'active', '2025-11-08 12:11:45', '2025-11-08 12:55:33');
 
 -- --------------------------------------------------------
 
@@ -355,9 +291,10 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `status`, `created_at`, `updated_at`) VALUES
-(1, 'SuperAdmin', 'sup@gmail.com', NULL, '$2y$12$u/8JV03x4ULHFJc4QfcT8uAeIQBW5ih5nnwIdj2zCkj/Ic9LWCvbW', NULL, 'active', '2025-11-09 00:27:55', '2025-11-09 00:27:55'),
-(2, 'Depot', 'depo@gmail.com', NULL, '$2y$12$r5EJ1/vyJYNnKLFWs7BV7.JNNrzrLCsCoKOgs2yzSa9Dz1Kakkn6W', NULL, 'active', '2025-11-09 00:27:56', '2025-11-09 00:27:56'),
-(3, 'Distributor', 'dist@gmail.com', NULL, '$2y$12$qcVc4byd7rkvQYIcKYtrquM4.E0lqYgwPIkyzGw2Jiol78EyEH3HO', NULL, 'active', '2025-11-09 00:27:56', '2025-11-09 00:27:56');
+(1, 'SuperAdmin', 'sup@gmail.com', NULL, '$2y$12$EPH.x6NCF9RSLIuqzFljX.tu/0GZ3n8rvKhXpCDJfSfgRLjwLPp7e', NULL, 'active', '2025-11-08 10:25:11', '2025-11-08 10:25:11'),
+(2, 'Depot', 'depo@gmail.com', NULL, '$2y$12$NZlxl3Ofloii4XOUyw6Xp.avwO8kwVtbguywpSpWywyTiqdQzBA02', NULL, 'active', '2025-11-08 10:25:11', '2025-11-08 10:25:11'),
+(3, 'Distributor', 'dist@gmail.com', NULL, '$2y$12$KoeHfZIjeiH.bre4EEaOSeGT6c81OtP29g2HLcoJUZI9WjNmx2f7C', NULL, 'active', '2025-11-08 10:25:11', '2025-11-08 10:25:11'),
+(4, 'maya', 'ma@gmail.com', NULL, '$2y$12$cDe6UMh5TN6iTazzYcAdEOYiM9Q0PkEY88YIaJU7lqH0ST.Px4gTu', NULL, 'active', '2025-11-08 10:26:47', '2025-11-08 10:27:14');
 
 --
 -- Indexes for dumped tables
@@ -423,37 +360,6 @@ ALTER TABLE `password_reset_tokens`
   ADD PRIMARY KEY (`email`);
 
 --
--- Indexes for table `purchase_invoices`
---
-ALTER TABLE `purchase_invoices`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `purchase_invoices_invoice_number_unique` (`invoice_number`),
-  ADD KEY `purchase_invoices_supplier_id_foreign` (`supplier_id`),
-  ADD KEY `purchase_invoices_user_id_foreign` (`user_id`);
-
---
--- Indexes for table `raw_materials`
---
-ALTER TABLE `raw_materials`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `raw_materials_name_unique` (`name`);
-
---
--- Indexes for table `raw_material_purchase_items`
---
-ALTER TABLE `raw_material_purchase_items`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `purchase_batch_unique` (`purchase_invoice_id`,`raw_material_id`,`batch_number`),
-  ADD KEY `raw_material_purchase_items_raw_material_id_foreign` (`raw_material_id`);
-
---
--- Indexes for table `raw_material_stocks`
---
-ALTER TABLE `raw_material_stocks`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `raw_material_stocks_raw_material_id_batch_number_unique` (`raw_material_id`,`batch_number`);
-
---
 -- Indexes for table `roles`
 --
 ALTER TABLE `roles`
@@ -500,7 +406,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `depos`
 --
 ALTER TABLE `depos`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `distributors`
@@ -524,31 +430,7 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
-
---
--- AUTO_INCREMENT for table `purchase_invoices`
---
-ALTER TABLE `purchase_invoices`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `raw_materials`
---
-ALTER TABLE `raw_materials`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `raw_material_purchase_items`
---
-ALTER TABLE `raw_material_purchase_items`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `raw_material_stocks`
---
-ALTER TABLE `raw_material_stocks`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `roles`
@@ -560,7 +442,7 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT for table `role_user`
 --
 ALTER TABLE `role_user`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `suppliers`
@@ -572,7 +454,7 @@ ALTER TABLE `suppliers`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Constraints for dumped tables
@@ -590,26 +472,6 @@ ALTER TABLE `depos`
 ALTER TABLE `distributors`
   ADD CONSTRAINT `distributors_depo_id_foreign` FOREIGN KEY (`depo_id`) REFERENCES `depos` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `distributors_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
-
---
--- Constraints for table `purchase_invoices`
---
-ALTER TABLE `purchase_invoices`
-  ADD CONSTRAINT `purchase_invoices_supplier_id_foreign` FOREIGN KEY (`supplier_id`) REFERENCES `suppliers` (`id`),
-  ADD CONSTRAINT `purchase_invoices_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
-
---
--- Constraints for table `raw_material_purchase_items`
---
-ALTER TABLE `raw_material_purchase_items`
-  ADD CONSTRAINT `raw_material_purchase_items_purchase_invoice_id_foreign` FOREIGN KEY (`purchase_invoice_id`) REFERENCES `purchase_invoices` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `raw_material_purchase_items_raw_material_id_foreign` FOREIGN KEY (`raw_material_id`) REFERENCES `raw_materials` (`id`);
-
---
--- Constraints for table `raw_material_stocks`
---
-ALTER TABLE `raw_material_stocks`
-  ADD CONSTRAINT `raw_material_stocks_raw_material_id_foreign` FOREIGN KEY (`raw_material_id`) REFERENCES `raw_materials` (`id`);
 
 --
 -- Constraints for table `role_user`
